@@ -1,7 +1,5 @@
 from typing import Iterable, List, Callable, Any, TypeVar, Union
 import sys
-from operator import is_not
-from itertools import islice
 from functools import reduce, partial
 
 T1 = TypeVar('T1')
