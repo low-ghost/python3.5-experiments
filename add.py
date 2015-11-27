@@ -6,21 +6,23 @@ T1 = TypeVar('T1')
 T2 = TypeVar('T2')
 T3 = TypeVar('T3')
 
-def safe_cast(toType: Callable[[T1], T2], val: T1, default: T3=None) -> [T2, T3]:
+def safe_cast(to_type: Callable[[T1], T2], val: T1, default: T3=None) -> [T2, T3]:
     try:
-        return toType(val)
+        return to_type(val)
     except ValueError:
         return default
 
+def compose(*funcs):
+    return lambda v: reduce(lambda accum, f: f(accum), funcs[::-1], v)
+
 def add(x: int, y: int) -> int:
-    return x + y
+    return x + y if None.__ne__(y) else x;
 
-toInt = partial(safe_cast, int)
+to_int = partial(safe_cast, int)
 
-def notNone(L: Iterable[Any]) -> List[Any]:
-    return list(filter(None.__ne__, L))
+# not_none = compose(list, partial(filter, None.__ne__))
 
-def addIterable(I: Iterable[Any]) -> int:
-    return reduce(add, notNone(map(toInt, I)), 0)
+def add_iterable(I: Iterable[Any]) -> int:
+    return reduce(add, map(to_int, I), 0)
 
-print(addIterable(sys.argv))
+print(add_iterable(sys.argv))
